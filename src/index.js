@@ -1,15 +1,15 @@
+let renderer;
+let stage;
+let dragonbonesFactory;
+let armature;
+
+let dragonBonesDatas = [];
+let textures = {};
+
+const width = 1280;
+const height = 720;
+
 function main() {
-    let renderer;
-    let stage;
-    let dragonbonesFactory;
-    let armature;
-
-    let dragonBonesDatas = [];
-    let textures = {};
-
-    const width = 1280;
-    const height = 720;
-
     renderer = PIXI.autoDetectRenderer(width, height, {
         view: document.getElementById('gameCanvas')
     });
