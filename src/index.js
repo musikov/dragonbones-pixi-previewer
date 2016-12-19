@@ -28,12 +28,16 @@ function main() {
     createControl('armatures', onArmatureChange);
     createControl('animations', onAnimationChange);
 
-    function onArmatureChange(key) {
+    function eraseArmature() {
         if (armature) {
             dragonBones.WorldClock.clock.remove(armature);
             armature.display.destroy();
             armature = null;
         }
+    }
+
+    function onArmatureChange(key) {
+        eraseArmature();
 
         if (key) {
             armature = dragonbonesFactory.buildArmature(key);
@@ -51,7 +55,8 @@ function main() {
 
     function onAnimationChange(key) {
         if (armature) {
-            armature.animation.gotoAndPlay(key);
+            armature.animation.stop();
+            setTimeout(() => armature.animation.gotoAndPlay(key), 30);
         }
     }
 
@@ -130,6 +135,11 @@ function main() {
         control.ondrop = e => {
             e.preventDefault();
 
+            eraseArmature();
+
+            dragonbonesFactory.removeDragonBonesData('armature');
+            dragonbonesFactory.removeTextureAtlasData('armature');
+
             dragonBonesDatas = [];
             textures = {};
 
@@ -153,12 +163,13 @@ function main() {
                     Object.getOwnPropertyNames(textures).forEach(key => {
                         dragonbonesFactory.parseTextureAtlasData(
                             textures[key].json,
-                            new PIXI.BaseTexture(textures[key].image)
+                            new PIXI.BaseTexture(textures[key].image),
+                            'armature'
                         );
                     });
 
                     if (dragonBonesDatas.length) {
-                        let data = dragonbonesFactory.parseDragonBonesData(dragonBonesDatas[0]);
+                        let data = dragonbonesFactory.parseDragonBonesData(dragonBonesDatas[0], 'armature');
                         updateArmaturesList(data.armatures);
                     }
                 })
